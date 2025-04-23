@@ -87,7 +87,7 @@ class WebhookNotifier:
                     f"Webhook request failed with status {response.status_code}: {response.text}"
                 )
             else:
-                logger.debug("Webhook notification sent successfully")
+                logger.info("Webhook notification sent successfully")
 
         except httpx.HTTPError as e:
             logger.error(f"HTTP error sending webhook notification: {e}")
