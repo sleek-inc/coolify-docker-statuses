@@ -13,6 +13,18 @@ service watches containers with specific Coolify labels and sends webhook notifi
 
 ## Installation
 
+### In Coolify
+
+Create a new application from a public repository with the HTTPS URL of this repository.
+
+In the `Persistent Storage` section of the Coolify application, mount the Docker socket from the host's 
+`/var/run/docker.sock` to `/var/run/docker.sock` in the container like the screenshot below:
+
+![Coolify Docker Socket Mount](static/persistent-storage.jpg)
+
+Next, configure the environment variables in the `Environment Variables` section of the Coolify application according 
+to the remaining sections in this README.
+
 ### Using Docker
 
 ```bash
@@ -57,10 +69,6 @@ rye sync
 # Run the application
 cs
 ```
-
-### In Coolify
-
-Create a new application from a public repository with the HTTPS URL of this repository.
 
 ## Configuration
 
