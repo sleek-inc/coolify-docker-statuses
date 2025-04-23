@@ -12,7 +12,13 @@ from libcoolifydockerstatuses.constants import ContainerStatus
 class ContainerStatusTracker:
     """Tracks the status of Docker containers asynchronously"""
 
-    def __init__(self, docker_client: DockerClient, monitor_label: str) -> None:
+    def __init__(
+        self,
+        docker_client: DockerClient,
+        monitor_label: str,
+        coolify_project_name: str,
+        coolify_environment_name: str,
+    ) -> None:
         """Initialize the container status tracker
 
         Args:
@@ -21,6 +27,8 @@ class ContainerStatusTracker:
         """
         self.docker_client = docker_client
         self.monitor_label = monitor_label
+        self.coolify_project_name = coolify_project_name
+        self.coolify_environment_name = coolify_environment_name
 
         self.container_statuses: Dict[str, ContainerStatus] = {}
         self.status_change_callbacks: List[
@@ -41,19 +49,36 @@ class ContainerStatusTracker:
         self.status_change_callbacks.append(callback)
 
     async def get_monitored_containers(self) -> List[Container]:
-        """Get all containers with the monitoring label asynchronously
+        """Get all containers with the monitoring label and matching Coolify project/environment asynchronously
 
         Returns:
             List of containers that should be monitored
         """
         try:
+            # Create a list of label filters
+            label_filters = [f"{self.monitor_label}=true"]
+
+            # Add project name filter
+            label_filters.append(f"coolify.projectName={self.coolify_project_name}")
+
+            # Add environment name filter
+            label_filters.append(
+                f"coolify.environmentName={self.coolify_environment_name}"
+            )
+
             # Use run_in_executor to make the Docker API call non-blocking
             loop = asyncio.get_running_loop()
+
+            # Docker API allows filtering by multiple labels by passing a list of "key=value" strings
             containers = await loop.run_in_executor(
                 None,
                 lambda: self.docker_client.containers.list(
-                    all=True, filters={"label": f"{self.monitor_label}=true"}
+                    all=True, filters={"label": label_filters}
                 ),
+            )
+
+            logger.debug(
+                f"Found {len(containers)} containers matching filters: {label_filters}"
             )
             return containers
         except APIError as e:

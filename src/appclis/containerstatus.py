@@ -62,6 +62,8 @@ async def run(
     docker_socket: str,
     status_change_webhook_url: str,
     coolify_monitor_label: str,
+    coolify_project_name: str,
+    coolify_environment_name: str,
 ) -> None:
     """
     Main function to run the Docker container deployment monitor
@@ -80,7 +82,10 @@ async def run(
 
     # The docker container status tracker
     tracker = ContainerStatusTracker(
-        docker_client=docker_client, monitor_label=coolify_monitor_label
+        docker_client=docker_client,
+        monitor_label=coolify_monitor_label,
+        coolify_project_name=coolify_project_name,
+        coolify_environment_name=coolify_environment_name,
     )
 
     # The webhook notifier
@@ -139,6 +144,18 @@ def main(
         allow_dash=True,
         envvar="COOLIFY_MONITOR_LABEL",
     ),
+    coolify_project_name: str = typer.Option(
+        ...,
+        help="Project name to identify containers to monitor",
+        allow_dash=True,
+        envvar="COOLIFY_PROJECT_NAME",
+    ),
+    coolify_environment_name: str = typer.Option(
+        ...,
+        help="Environment name to identify containers to monitor",
+        allow_dash=True,
+        envvar="COOLIFY_ENVIRONMENT_NAME",
+    ),
 ):
     """
     Main entry point for the Docker container deployment monitor.
@@ -154,6 +171,8 @@ def main(
             docker_socket=docker_socket,
             status_change_webhook_url=status_change_webhook_url,
             coolify_monitor_label=coolify_monitor_label,
+            coolify_project_name=coolify_project_name,
+            coolify_environment_name=coolify_environment_name,
         )
     )
 

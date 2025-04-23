@@ -37,6 +37,8 @@ MONITOR_INTERVAL_IN_SECONDS=${MONITOR_INTERVAL_IN_SECONDS:-5}
 DOCKER_SOCKET=${DOCKER_SOCKET:-"unix://var/run/docker.sock"}
 STATUS_CHANGE_WEBHOOK_URL=${STATUS_CHANGE_WEBHOOK_URL:-""}
 COOLIFY_MONITOR_LABEL=${MONITOR_LABEL:-"coolify.managed"}
+COOLIFY_PROJECT_NAME=${COOLIFY_PROJECT_NAME:-""}
+COOLIFY_ENVIRONMENT_NAME=${COOLIFY_ENVIRONMENT_NAME:-"production"}
 
 # Parse command-line arguments
 ARGS=()
@@ -54,6 +56,12 @@ for arg in "$@"; do
     --coolify-monitor-label=*)
       COOLIFY_MONITOR_LABEL="${arg#*=}"
       ;;
+    --coolify-project-name=*)
+      COOLIFY_PROJECT_NAME="${arg#*=}"
+      ;;
+    --coolify-environment-name=*)
+      COOLIFY_ENVIRONMENT_NAME="${arg#*=}"
+      ;;
     *)
       # Add any other arguments to the ARGS array
       ARGS+=("$arg")
@@ -66,11 +74,15 @@ export MONITOR_INTERVAL_IN_SECONDS
 export DOCKER_SOCKET
 export STATUS_CHANGE_WEBHOOK_URL
 export MONITOR_LABEL
+export COOLIFY_PROJECT_NAME
+export COOLIFY_ENVIRONMENT_NAME
 
 echo "Configuration:"
 echo "  Monitor Interval: ${MONITOR_INTERVAL_IN_SECONDS} seconds"
 echo "  Docker Socket: ${DOCKER_SOCKET}"
 echo "  Monitor Label: ${COOLIFY_MONITOR_LABEL}"
+echo "  Project Name: ${COOLIFY_PROJECT_NAME}"
+echo "  Environment Name: ${COOLIFY_ENVIRONMENT_NAME}"
 if [ -n "$STATUS_CHANGE_WEBHOOK_URL" ]; then
   echo "  Webhook URL: Configured"
 else
@@ -85,6 +97,8 @@ if [ -n "$STATUS_CHANGE_WEBHOOK_URL" ]; then
   PY_ARGS+=("--status-change-webhook-url=${STATUS_CHANGE_WEBHOOK_URL}")
 fi
 PY_ARGS+=("--coolify-monitor-label=${COOLIFY_MONITOR_LABEL}")
+PY_ARGS+=("--coolify-project-name=${COOLIFY_PROJECT_NAME}")
+PY_ARGS+=("--coolify-environment-name=${COOLIFY_ENVIRONMENT_NAME}")
 
 # Add any remaining arguments
 for arg in "${ARGS[@]}"; do
