@@ -70,7 +70,7 @@ class WebhookNotifier:
             payload = {
                 "event_type": "container_status_change",
                 "timestamp": datetime.now(tz=pytz.UTC).isoformat(),
-                "container": container_info,
+                "container": container_info.model_dump(),
                 "previous_status": previous_status.name,
                 "current_status": current_status.name,
             }
