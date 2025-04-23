@@ -44,19 +44,6 @@ async def print_container_status_report(tracker: ContainerStatusTracker) -> None
         logger.info(f"  - {container.name} ({container.id[:12]}): {status.name}")
 
 
-async def shutdown(scheduler: AsyncIOScheduler, notifier: WebhookNotifier) -> None:
-    """Shutdown the application gracefully
-
-    Args:
-        scheduler: The scheduler to shut down
-        notifier: Webhook notifier to close
-    """
-    logger.info("Shutting down...")
-    scheduler.shutdown(wait=False)
-
-    await notifier.close()
-
-
 async def run(
     monitor_interval_in_seconds: int,
     docker_socket: str,
