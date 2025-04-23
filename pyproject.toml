@@ -1,0 +1,44 @@
+[project]
+name = "coolify-docker-statuses"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Batista Harahap", email = "batista@bango29.com" }
+]
+dependencies = [
+    "docker>=7.1.0",
+    "apscheduler>=3.11.0",
+    "httpx>=0.28.1",
+    "uvloop>=0.21.0",
+    "loguru>=0.7.3",
+    "pytz>=2025.2",
+    "typer>=0.15.2",
+    "python-dotenv>=1.1.0",
+    "paramiko>=3.5.1",
+    "pydantic>=2.11.3",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.11.6",
+    "ruff-lsp>=0.0.62",
+]
+
+[project.scripts]
+cs = "appclis.containerstatus:app"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/appclis",
+    "src/libcoolifydockerstatuses"
+]
