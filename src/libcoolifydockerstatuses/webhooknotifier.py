@@ -17,7 +17,7 @@ class ContainerInfo(BaseModel):
     name: str | None = "unknown"
     image: str | None = "unknown"
     labels: Dict[str, str] | None = Field(default_factory=dict)
-    created: datetime | None = None
+    created: str | None = None
     error: str | None = None
 
 
