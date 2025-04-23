@@ -95,6 +95,9 @@ async def run(
         webhook_timeout=30,
     )
 
+    # Register the notifier as a callback for status changes
+    tracker.register_status_change_callback(notifier.notify_status_change)
+
     # Print initial status report
     await print_container_status_report(tracker=tracker)
 
